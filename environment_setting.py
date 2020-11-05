@@ -23,18 +23,20 @@ else:
     device = torch.device('cpu')
 
 # 项目根目录
-project_path = 'D:/Projects/大规模多媒体信息检索与管理/FaceRecognize/'
-dataset_pah = 'D:/Projects/大规模多媒体信息检索与管理/dataset/'
+project_path = './'
+dataset_path = '../dataset/'
+if not os.path.exists(project_path + "checkpoint"):
+    os.mkdir(project_path + "checkpoint")
 
 # 训练数据集目录
-train_dataset_path = dataset_pah + '../dataset/lfw-align-128/'
+train_dataset_path = dataset_path + 'lfw-align-128/'
 # 测试集的数据加载器
 train_dataset = LFWDataset
 # 训练后保存的模型参数位置格式
 train_checkpoint_path = project_path + 'checkpoint/checkpoint_epoch_{}{}.pth'
 
 # 测试数据集目录
-test_dataset_path = dataset_pah + 'dataset/lfw-align-128/'
+test_dataset_path = dataset_path + 'lfw-align-128/'
 test_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_3.pth'
 
 # 运行模型参数路径

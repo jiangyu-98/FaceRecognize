@@ -80,8 +80,8 @@ class FaceRecognizer:
         return fingerprints
 
     @staticmethod
-    def _cosine_similarity(vector1, vector2) -> float:
-        return float(np.dot(vector1, vector2) / (norm(vector1) * norm(vector2)))
+    def _cosine_similarity(feature1, feature2) -> float:
+        return float(np.dot(feature1, feature2) / (norm(feature1) * norm(feature2)))
 
 
 class FaceRecognizerTest(unittest.TestCase):
