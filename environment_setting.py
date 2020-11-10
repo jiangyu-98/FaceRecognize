@@ -36,8 +36,8 @@ train_dataset = LFWDataset
 train_checkpoint_path = project_path + 'checkpoint/checkpoint_epoch_{}{}.pth'
 
 # 测试数据集目录
-test_dataset_path = dataset_path + 'lfw-align-128/'
-test_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_3.pth'
+test_dataset_path = dataset_path + 'lfw/'
+test_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_8.pth'
 
 # 运行模型参数路径
 run_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_8.pth'

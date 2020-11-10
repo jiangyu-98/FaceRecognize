@@ -72,7 +72,7 @@ class FaceRecognizer:
 
     @staticmethod
     def _load_fingerprint_database(path) -> Dict[str, np.ndarray]:
-        if os.path.exists(path):
+        if path is not None and os.path.exists(path):
             with open(path, 'rb') as f:
                 fingerprints = pickle.load(f)
         else:

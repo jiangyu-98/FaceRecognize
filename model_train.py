@@ -98,7 +98,7 @@ if __name__ == '__main__':
     net_trainer = NetTrainer(train_dataset, train_dataset_path, hyper_parameter)
 
     # 加载参数
-    net_trainer.load_checkpoint(1)
+    net_trainer.load_checkpoint(epoch=8)
 
     # 开始训练
     net_trainer.start_train()
