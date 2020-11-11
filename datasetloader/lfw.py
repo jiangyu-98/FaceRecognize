@@ -15,6 +15,8 @@ class LFWDataset(data.Dataset):
         data_list = []
         cnt = 0
         for people in peoples:
+            if os.path.isfile(data_folder + people):
+                continue
             pictures = os.listdir(data_folder + people)
             for picture in pictures:
                 picture_path = data_folder + people + "/" + picture
