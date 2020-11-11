@@ -41,7 +41,7 @@ class LFWTester:
         # 计算相似度
         similarities = []
         for face1_path, face2_path, label in test_data:
-            similarity = self.get_similarity(face1_path, face2_path)
+            similarity = self._get_similarity(face1_path, face2_path)
             similarities.append(similarity)
         # 计算准确率
         accuracy_rate, similarity_threshold = self._calculate_max_accuracy(
@@ -68,7 +68,8 @@ class LFWTester:
         # 计算FRR@FAR=
         return correct_rate
 
-    def _calculate_max_accuracy(self, similarities, labels):
+    @staticmethod
+    def _calculate_max_accuracy(similarities, labels):
         similarities_with_labels = sorted(list(zip(similarities, labels)), key=lambda x: x[0])
         correct_num = sum(x[1] for x in similarities_with_labels)
         max_correct_num = correct_num
@@ -87,7 +88,7 @@ class LFWTester:
     def one_to_more_test(self):
         pass
 
-    def get_face_feature(self, image_path):
+    def _get_face_feature(self, image_path):
         if image_path in self.features:
             return self.features[image_path]
 
@@ -96,13 +97,13 @@ class LFWTester:
         self.features[image_path] = feature
         return feature
 
-    def get_similarity(self, face1_path, face2_path):
+    def _get_similarity(self, face1_path, face2_path):
         face_pair = (face1_path, face2_path)
         if face_pair in self.similarities:
             return self.similarities[face_pair]
 
-        feature1 = self.get_face_feature(face1_path)
-        feature2 = self.get_face_feature(face2_path)
+        feature1 = self._get_face_feature(face1_path)
+        feature2 = self._get_face_feature(face2_path)
         similarity = self.face_recognizer._cosine_similarity(feature1, feature2)
         self.similarities[face_pair] = similarity
         return similarity

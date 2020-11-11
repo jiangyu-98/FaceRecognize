@@ -2,7 +2,7 @@ import os
 
 import torch
 
-from datasetloader import LFWDataset
+from datasetloader import LFWDataset, CASIADataset
 
 __all__ = [
     'device',
@@ -29,9 +29,11 @@ if not os.path.exists(project_path + "checkpoint"):
     os.mkdir(project_path + "checkpoint")
 
 # 训练数据集目录
-train_dataset_path = dataset_path + 'lfw-align-128/'
+# train_dataset_path = dataset_path + 'lfw-align-128/'
+train_dataset_path = dataset_path + 'CASIA-WebFace/'
 # 测试集的数据加载器
-train_dataset = LFWDataset
+# train_dataset = LFWDataset
+train_dataset = CASIADataset
 # 训练后保存的模型参数位置格式
 train_checkpoint_path = project_path + 'checkpoint/checkpoint_epoch_{}{}.pth'
 
