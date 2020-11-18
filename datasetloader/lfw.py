@@ -28,7 +28,7 @@ class LFWDataset(data.Dataset):
             transforms.RandomCrop(input_shape[1:]),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
-            transforms.Normalize(mean=[0.5], std=[0.5])
+            transforms.Normalize(mean=[0.5], std=[0.5]),
         ])
 
     def __getitem__(self, index):

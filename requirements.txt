@@ -3,3 +3,6 @@ numpy
 pillow
 torchvision
 matplotlib
+imutils
+opencv-python
+dlib
