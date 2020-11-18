@@ -13,6 +13,7 @@ class HyperParameter:
     batch_size: int
     max_epoch: int
     checkpoint_save_interval: int
+    message: str
 
 
 class NetTrainer:
@@ -23,6 +24,7 @@ class NetTrainer:
         self._load_optimizer()
         self._load_scheduler()
         self.epoch = 1
+        self.hyper_parameter = hyper_parameter
 
     def _load_model(self) -> None:
         self.backbone = resnet_face18(use_se=False)
@@ -42,7 +44,7 @@ class NetTrainer:
         self.scheduler = StepLR(self.optimizer, step_size=10, gamma=0.1)
 
     def start_train(self) -> None:
-        while self.epoch <= hyper_parameter.max_epoch:
+        while self.epoch <= self.hyper_parameter.max_epoch:
             self.backbone.train()
             for j, (data_input, label) in enumerate(self.dataloader):
                 self.optimizer.zero_grad()
@@ -56,25 +58,25 @@ class NetTrainer:
                 # 反向传播优化
                 loss.backward()
                 self.optimizer.step()
-                print(f'epoch {self.epoch}, iter {j}, loss = {loss}')
+                print(f'epoch {self.epoch}, iter {j} / {len(self.dataloader)}, loss = {loss}')
 
             self.scheduler.step()
-            if self.epoch % hyper_parameter.checkpoint_save_interval == 0:
+            if self.epoch % self.hyper_parameter.checkpoint_save_interval == 0:
                 self.save_checkpoint()
             self.epoch += 1
 
-    def load_checkpoint(self, epoch: int, message: str = '') -> None:
-        path = train_checkpoint_path.format(epoch, message)
+    def load_checkpoint(self, epoch: int) -> None:
+        path = train_checkpoint_path.format(epoch, self.hyper_parameter.message)
         if os.path.exists(path):
             checkpoint = torch.load(path, map_location=device)
             self.backbone.load_state_dict(checkpoint['backbone'])
             self.metric.load_state_dict(checkpoint['metric'])
             self.optimizer.load_state_dict(checkpoint['optimizer'])
-            self.epoch = checkpoint['epoch']
+            self.epoch = checkpoint['epoch'] + 1
             print(f'加载参数：{path}')
 
-    def save_checkpoint(self, message='') -> None:
-        path = train_checkpoint_path.format(self.epoch, message)
+    def save_checkpoint(self) -> None:
+        path = train_checkpoint_path.format(self.epoch, self.hyper_parameter.message)
         torch.save({
             'backbone': self.backbone.state_dict(),
             'metric': self.metric.state_dict(),
@@ -89,16 +91,17 @@ if __name__ == '__main__':
 
     # 模型超参数
     hyper_parameter = HyperParameter(
-        batch_size=20,
-        max_epoch=10,
-        checkpoint_save_interval=1
+        batch_size=24,
+        max_epoch=30,
+        checkpoint_save_interval=2,
+        message='lfw'
     )
 
     # 加载模型
     net_trainer = NetTrainer(train_dataset, train_dataset_path, hyper_parameter)
 
     # 加载参数
-    # net_trainer.load_checkpoint(epoch=8)
+    net_trainer.load_checkpoint(epoch=8)
 
     # 开始训练
     net_trainer.start_train()
