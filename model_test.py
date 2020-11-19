@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
 
-from environment_setting import test_dataset_path, test_model_weight_path
+from environment import test_dataset_path, test_model_weight_path
 from face_recognizer import FaceRecognizer
 
 

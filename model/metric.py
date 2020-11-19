@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn import Parameter
 
-from environment_setting import device
+from environment import device
 
 
 class ArcMarginProduct(nn.Module):

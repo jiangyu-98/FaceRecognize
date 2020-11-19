@@ -1,9 +1,11 @@
 import os
 
 import torch
+import cv2
 
 __all__ = [
     'device',
+    'cv2',
     'project_path',
     'train_checkpoint_path',
     'train_dataset',
@@ -12,6 +14,9 @@ __all__ = [
     'test_model_weight_path',
     'run_model_weight_path',
     'run_fingerprint_database_path',
+    'mask_slim_path',
+    'lfw_path',
+    'casia_path'
 ]
 
 # 计算设备
@@ -27,15 +32,11 @@ project_path = './'
 dataset_path = '../dataset/'
 if not os.path.exists(project_path + "checkpoint"):
     os.mkdir(project_path + "checkpoint")
+# 数据集
+mask_slim_path = dataset_path + 'test-mask-slim/'
+lfw_path = dataset_path + 'lfw/'
+casia_path = dataset_path + 'CASIA-WebFace/'
 
-# 训练数据集
-from datasetloader import LFWDataset
-
-train_dataset = LFWDataset
-train_dataset_path = dataset_path + 'lfw-align-128/'
-# from datasetloader import CASIADataset
-# train_dataset_path = dataset_path + 'CASIA-WebFace/'
-# train_dataset = CASIADataset
 # 训练后保存的模型参数位置格式
 train_checkpoint_path = project_path + 'checkpoint/checkpoint_epoch_{}_{}.pth'
 
@@ -44,6 +45,6 @@ test_dataset_path = dataset_path + 'lfw-align-128/'
 test_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_8_lfw.pth'
 
 # 运行模型参数路径
-run_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_8_lfw.pth'
+run_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_4_casia.pth'
 # 指纹数据库路径
 run_fingerprint_database_path = project_path + 'fingerprint.db'

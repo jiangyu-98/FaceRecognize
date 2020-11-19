@@ -9,7 +9,7 @@ from PIL import Image
 from numpy.linalg import norm
 from torchvision import transforms
 
-from environment_setting import device
+from environment import device
 from model import resnet_face18
 
 __all__ = ['FaceRecognizer']
@@ -86,7 +86,7 @@ class FaceRecognizer:
 
 class FaceRecognizerTest(unittest.TestCase):
     def setUp(self) -> None:
-        from environment_setting import test_dataset_path, run_model_weight_path, run_fingerprint_database_path
+        from environment import test_dataset_path, run_model_weight_path, run_fingerprint_database_path
         self.face_recognizer = FaceRecognizer(run_model_weight_path, run_fingerprint_database_path)
         self.test_dataset_path = test_dataset_path
 
@@ -119,7 +119,7 @@ class FaceRecognizerTest(unittest.TestCase):
         print(result)
         self.assertEqual(result[0], 'Adolfo_Rodriguez_Saa')
         self.face_recognizer.save_fingerprint_database()
-        from environment_setting import run_model_weight_path, run_fingerprint_database_path
+        from environment import run_model_weight_path, run_fingerprint_database_path
         face_recognizer = FaceRecognizer(run_model_weight_path, run_fingerprint_database_path)
         result = face_recognizer.face_recognize(self.image2)
         print(result)

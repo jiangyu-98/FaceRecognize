@@ -4,7 +4,8 @@ from dataclasses import dataclass
 import torch
 from torch.optim.lr_scheduler import StepLR
 
-from environment_setting import device, train_checkpoint_path
+import dataset
+from environment import device, train_checkpoint_path
 from model import FocalLoss, ArcMarginProduct, resnet_face18
 
 
@@ -17,8 +18,8 @@ class HyperParameter:
 
 
 class NetTrainer:
-    def __init__(self, dataset, dataset_path, hyper_parameter: HyperParameter) -> None:
-        self.dataloader = dataset.load_data(dataset_path, hyper_parameter.batch_size)
+    def __init__(self, dataset, hyper_parameter: HyperParameter) -> None:
+        self.dataloader = dataset
         self._load_model()
         self._load_criterion()
         self._load_optimizer()
@@ -87,21 +88,21 @@ class NetTrainer:
 
 
 if __name__ == '__main__':
-    from environment_setting import train_dataset, train_dataset_path
-
     # 模型超参数
     hyper_parameter = HyperParameter(
-        batch_size=24,
+        batch_size=16,
         max_epoch=30,
-        checkpoint_save_interval=2,
-        message='lfw'
+        checkpoint_save_interval=1,
+        message='casia'
     )
+    # 加载训练数据
+    train_dataloader = dataset.get_casia_dataloader(hyper_parameter.batch_size)
 
     # 加载模型
-    net_trainer = NetTrainer(train_dataset, train_dataset_path, hyper_parameter)
+    net_trainer = NetTrainer(train_dataloader, hyper_parameter)
 
     # 加载参数
-    net_trainer.load_checkpoint(epoch=8)
+    net_trainer.load_checkpoint(epoch=4)
 
     # 开始训练
     net_trainer.start_train()
