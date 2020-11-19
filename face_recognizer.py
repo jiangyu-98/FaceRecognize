@@ -5,7 +5,6 @@ from typing import *
 
 import numpy as np
 import torch
-from PIL import Image
 from numpy.linalg import norm
 from torchvision import transforms
 
@@ -21,7 +20,9 @@ class FaceRecognizer:
         self.fingerprints = FaceRecognizer._load_fingerprint_database(fingerprint_database_path)
         self.fingerprint_database_path: str = fingerprint_database_path
         self.transforms = transforms.Compose([
-            transforms.CenterCrop((128, 128)),
+            transforms.ToPILImage(),
+            transforms.Resize((128, 128)),
+            transforms.Grayscale(),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.5], std=[0.5]),
         ])
@@ -55,7 +56,7 @@ class FaceRecognizer:
             pickle.dump(self.fingerprints, f)
 
     def _get_feature_vector(self, image) -> np.ndarray:
-        image = self.transforms(Image.fromarray(image)).float()
+        image = self.transforms(image).float()
         image = image.to(device)
         image = image.reshape([1, 1, 128, 128])
         feature_vector = self.model(image)
@@ -86,16 +87,16 @@ class FaceRecognizer:
 
 class FaceRecognizerTest(unittest.TestCase):
     def setUp(self) -> None:
-        from environment import test_dataset_path, run_model_weight_path, run_fingerprint_database_path
+        from environment import test_dataset_path, run_model_weight_path, run_fingerprint_database_path, cv2
         self.face_recognizer = FaceRecognizer(run_model_weight_path, run_fingerprint_database_path)
         self.test_dataset_path = test_dataset_path
 
-        img1_path = test_dataset_path + 'Adolfo_Rodriguez_Saa/Adolfo_Rodriguez_Saa_0001.jpg'
-        img2_path = test_dataset_path + 'Adolfo_Rodriguez_Saa/Adolfo_Rodriguez_Saa_0002.jpg'
-        img3_path = test_dataset_path + 'Adriana_Perez_Navarro/Adriana_Perez_Navarro_0001.jpg'
-        self.image1 = np.array(Image.open(img1_path).convert('L'))
-        self.image2 = np.array(Image.open(img2_path).convert('L'))
-        self.image3 = np.array(Image.open(img3_path).convert('L'))
+        img1_path = test_dataset_path + 'Adolfo_Rodriguez_Saa/Adolfo_Rodriguez_Saa_0001.png'
+        img2_path = test_dataset_path + 'Adolfo_Rodriguez_Saa/Adolfo_Rodriguez_Saa_0002.png'
+        img3_path = test_dataset_path + 'Adriana_Perez_Navarro/Adriana_Perez_Navarro_0001.png'
+        self.image1 = cv2.imread(img1_path)
+        self.image2 = cv2.imread(img2_path)
+        self.image3 = cv2.imread(img3_path)
 
     def test_face_verification(self):
         """

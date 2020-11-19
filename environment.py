@@ -1,22 +1,20 @@
 import os
 
-import torch
 import cv2
+import torch
 
 __all__ = [
     'device',
     'cv2',
     'project_path',
+    'mask_slim_path',
+    'lfw_path',
+    'casia_path',
     'train_checkpoint_path',
-    'train_dataset',
-    'train_dataset_path',
     'test_dataset_path',
     'test_model_weight_path',
     'run_model_weight_path',
     'run_fingerprint_database_path',
-    'mask_slim_path',
-    'lfw_path',
-    'casia_path'
 ]
 
 # 计算设备
@@ -41,10 +39,10 @@ casia_path = dataset_path + 'CASIA-WebFace/'
 train_checkpoint_path = project_path + 'checkpoint/checkpoint_epoch_{}_{}.pth'
 
 # 测试数据集目录
-test_dataset_path = dataset_path + 'lfw-align-128/'
-test_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_8_lfw.pth'
+test_dataset_path = dataset_path + 'lfw/'
+test_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_13_lfw.pth'
 
 # 运行模型参数路径
-run_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_4_casia.pth'
+run_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_13_lfw.pth'
 # 指纹数据库路径
 run_fingerprint_database_path = project_path + 'fingerprint.db'

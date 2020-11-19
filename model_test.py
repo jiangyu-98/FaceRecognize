@@ -2,10 +2,10 @@ import os
 from typing import *
 
 import numpy as np
-from PIL import Image
+# from PIL import Image
 from matplotlib import pyplot as plt
 
-from environment import test_dataset_path, test_model_weight_path
+from environment import test_dataset_path, test_model_weight_path, cv2
 from face_recognizer import FaceRecognizer
 
 
@@ -28,15 +28,17 @@ class LFWTester:
                 for _ in range(300):
                     name, pic_num1, pic_num2 = lines[line_num].split("\t")
                     line_num += 1
-                    face1_path = f"{test_dataset_path}{name}/{name}_{pic_num1.zfill(4)}.jpg"
-                    face2_path = f"{test_dataset_path}{name}/{name}_{pic_num2.zfill(4)}.jpg"
-                    fold.append((face1_path, face2_path, True))
+                    face1_path = f"{test_dataset_path}{name}/{name}_{pic_num1.zfill(4)}.png"
+                    face2_path = f"{test_dataset_path}{name}/{name}_{pic_num2.zfill(4)}.png"
+                    if os.path.exists(face1_path) and os.path.exists(face2_path):
+                        fold.append((face1_path, face2_path, True))
                 for _ in range(300):
                     name1, pic_num1, name2, pic_num2 = lines[line_num].split("\t")
                     line_num += 1
-                    face1_path = f"{test_dataset_path}{name1}/{name1}_{pic_num1.zfill(4)}.jpg"
-                    face2_path = f"{test_dataset_path}{name2}/{name2}_{pic_num2.zfill(4)}.jpg"
-                    fold.append((face1_path, face2_path, False))
+                    face1_path = f"{test_dataset_path}{name1}/{name1}_{pic_num1.zfill(4)}.png"
+                    face2_path = f"{test_dataset_path}{name2}/{name2}_{pic_num2.zfill(4)}.png"
+                    if os.path.exists(face1_path) and os.path.exists(face2_path):
+                        fold.append((face1_path, face2_path, False))
                 self.dataset_one.append(fold)
 
         # 加载1:N测试数据
@@ -45,11 +47,14 @@ class LFWTester:
             if os.path.isfile(test_dataset_path + name):
                 continue
             pictures = os.listdir(test_dataset_path + name)
+            pictures = [picture for picture in pictures if picture.endswith(".png")]
             for i, picture in enumerate(sorted(pictures)):
-                if i == 0 and len(pictures) > 1:
-                    self.dataset_more_test.append([picture, name])
-                else:
-                    self.dataset_more_base.append([picture, name])
+                face_path = f"{test_dataset_path}{name}/{picture}"
+                if os.path.isfile(face_path):
+                    if i == 0 and len(pictures) > 1:
+                        self.dataset_more_test.append([face_path, name])
+                    else:
+                        self.dataset_more_base.append([face_path, name])
 
     def _one_to_one_test(self, test_data: List[Tuple[str, str, bool]]):
         result = {}
@@ -107,6 +112,9 @@ class LFWTester:
     @staticmethod
     def show_FRR_FAR_curve(FRR_FAR_curve: np.ndarray) -> None:
         plt.plot(FRR_FAR_curve[:, 0], FRR_FAR_curve[:, 1])
+        plt.xlabel("FAR")
+        plt.ylabel("FRR")
+        plt.show()
 
     @staticmethod
     def _calculate_max_accuracy(similarities, labels):
@@ -126,7 +134,8 @@ class LFWTester:
         return accuracy_rate, similarity_threshold
 
     def make_one_to_more_test(self):
-        for i, (name, picture) in enumerate(self.dataset_more_base):
+        for i, (picture, name) in enumerate(self.dataset_more_base):
+            print(picture)
             self.face_recognizer.fingerprints[name + "?" + str(i)] = self._get_face_feature(picture)
         correct_num = 0
         for name, picture in self.dataset_more_test:
@@ -138,7 +147,7 @@ class LFWTester:
                 if similarity > similarity_max:
                     name_of_max = name
                     similarity_max = similarity
-            if name_of_max.split("?")[0] == name:
+            if name_of_max.startswith(name):
                 correct_num += 1
         return correct_num / len(self.dataset_more_test)
 
@@ -146,7 +155,7 @@ class LFWTester:
         if image_path in self.features:
             return self.features[image_path]
 
-        image = np.array(Image.open(image_path).convert('L'))
+        image = cv2.imread(image_path)
         feature = self.face_recognizer._get_feature_vector(image)
         self.features[image_path] = feature
         return feature
@@ -167,8 +176,6 @@ if __name__ == '__main__':
     lwf_tester = LFWTester()
     # 1:1 测试
     # accuracy_rate, FRR_FAR_curve = lwf_tester.make_one_to_one_test()
-    # print(accuracy_rate)
-    # print(FRR_FAR_curve)
     # lwf_tester.show_FRR_FAR_curve(FRR_FAR_curve)
 
     # 1:N 测试

@@ -9,14 +9,12 @@ from environment import cv2
 
 
 class Dataset(data.Dataset):
-    def __init__(self, data_list, input_shape=(1, 128, 128)):
+    def __init__(self, data_list):
         self.data_list = np.random.permutation(data_list)
         self.transforms = transforms.Compose([
             transforms.ToPILImage(),
             transforms.Resize((128, 128)),
             transforms.Grayscale(),
-            transforms.RandomCrop(input_shape[1:]),
-            transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.5], std=[0.5])
         ])
@@ -35,7 +33,7 @@ class Dataset(data.Dataset):
         return DataLoader(cls(path), batch_size=batch_size, shuffle=True, num_workers=4)
 
 
-def get_lfw_datalist(condition=lambda x: x.endswith(".png")):
+def get_lfw_datalist(condition=lambda x: x.endswith('.png')):
     from environment import lfw_path as data_folder
     data_list = []
     for cnt, people in enumerate(os.listdir(data_folder)):
@@ -46,7 +44,7 @@ def get_lfw_datalist(condition=lambda x: x.endswith(".png")):
     return data_list
 
 
-def get_casia_datalist(condition=lambda x: x.endswith(".png")):
+def get_casia_datalist(condition=lambda x: x.endswith('.png')):
     from environment import casia_path as data_folder
     data_list = []
     for cnt, people in enumerate(os.listdir(data_folder)):
@@ -54,14 +52,14 @@ def get_casia_datalist(condition=lambda x: x.endswith(".png")):
             continue
         for idx, picture in enumerate(filter(condition, os.listdir(data_folder + people))):
             data_list.append([data_folder + people + '/' + picture, cnt])
-            if idx > 30:
+            if idx > 10:
                 break
         if len(data_list) > 50000:
             break
     return data_list
 
 
-def get_mask_slim_datalist(condition=lambda x: x.endswith(".png")):
+def get_mask_slim_datalist(condition=lambda x: x.endswith('.png')):
     from environment import mask_slim_path as data_folder
     data_list = []
     for cnt, people in enumerate(os.listdir(data_folder)):
@@ -90,8 +88,8 @@ def get_casia_dataloader(batch_size):
 def align_dataset(datalist_generator):
     from face_align import FaceAligner
 
-    data_list = datalist_generator(lambda x: x.endswith(".jpg"))
-    face_aligner = FaceAligner(device='cuda')
+    data_list = datalist_generator(lambda x: x.endswith('.jpg'))
+    face_aligner = FaceAligner()
     for picture, _ in data_list:
         try:
             if os.path.exists(picture.replace('jpg', 'png')):
@@ -106,4 +104,8 @@ def align_dataset(datalist_generator):
 
 
 if __name__ == '__main__':
-    print(align_dataset(get_mask_slim_datalist))
+    # v = get_casia_datalist()
+    # print(v)
+    # print(len(v))
+
+    print(align_dataset(get_casia_datalist))
