@@ -40,9 +40,9 @@ train_checkpoint_path = project_path + 'checkpoint/checkpoint_epoch_{}_{}.pth'
 
 # 测试数据集目录
 test_dataset_path = dataset_path + 'lfw/'
-test_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_13_lfw.pth'
+test_model_weight_path = project_path + 'checkpoint/26_casia.pth'
 
 # 运行模型参数路径
-run_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_13_lfw.pth'
+run_model_weight_path = project_path + 'checkpoint/checkpoint_epoch_27_casia.pth'
 # 指纹数据库路径
 run_fingerprint_database_path = project_path + 'fingerprint.db'

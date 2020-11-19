@@ -54,7 +54,7 @@ def get_casia_datalist(condition=lambda x: x.endswith('.png')):
             data_list.append([data_folder + people + '/' + picture, cnt])
             if idx > 10:
                 break
-        if len(data_list) > 50000:
+        if len(data_list) > 10000:
             break
     return data_list
 

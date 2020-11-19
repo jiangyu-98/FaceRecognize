@@ -1,5 +1,7 @@
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
+import torch
+
 #
 model_urls = {
     'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
@@ -192,11 +194,16 @@ class ResNetFace(nn.Module):
         x = self.bn1(x)
         x = self.prelu(x)
         x = self.maxpool(x)
+        # x = self.layer1(x)
+        # x = self.layer2(x)
+        # x = self.layer3(x)
+        # x = self.layer4(x)
 
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
-        x = self.layer4(x)
+        with torch.no_grad():
+            x = self.layer1(x)
+            x = self.layer2(x)
+            x = self.layer3(x)
+            x = self.layer4(x)
         x = self.bn4(x)
         x = self.dropout(x)
         x = x.view(x.size(0), -1)

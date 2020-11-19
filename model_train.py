@@ -38,7 +38,7 @@ class NetTrainer:
 
     def _load_optimizer(self) -> None:
         self.optimizer = torch.optim.SGD(
-            [{'params': self.backbone.parameters()}, {'params': self.metric.parameters()}], lr=1e-1,
+            [{'params': self.backbone.parameters()}, {'params': self.metric.parameters()}], lr=1e-2,
             weight_decay=5e-4)
 
     def _load_scheduler(self) -> None:
@@ -71,8 +71,8 @@ class NetTrainer:
         if os.path.exists(path):
             checkpoint = torch.load(path, map_location=device)
             self.backbone.load_state_dict(checkpoint['backbone'])
-            self.metric.load_state_dict(checkpoint['metric'])
-            self.optimizer.load_state_dict(checkpoint['optimizer'])
+            # self.metric.load_state_dict(checkpoint['metric'])
+            # self.optimizer.load_state_dict(checkpoint['optimizer'])
             self.epoch = checkpoint['epoch'] + 1
             print(f'加载参数：{path}')
 
@@ -96,13 +96,13 @@ if __name__ == '__main__':
         message='casia'
     )
     # 加载训练数据
-    train_dataloader = dataset.get_casia_dataloader(hyper_parameter.batch_size)
+    train_dataloader = dataset.get_mask_slim_dataloader(hyper_parameter.batch_size)
 
     # 加载模型
     net_trainer = NetTrainer(train_dataloader, hyper_parameter)
 
     # 加载参数
-    # net_trainer.load_checkpoint(epoch=1)
+    net_trainer.load_checkpoint(epoch=20)
 
     # 开始训练
     net_trainer.start_train()

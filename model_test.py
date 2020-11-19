@@ -223,17 +223,15 @@ class LFWTester:
 
 if __name__ == '__main__':
     lfw_tester = LFWTester()
-    data = lfw_tester.load_dataset_mask(2000)
-    accuracy_rate, similarity_threshold, similarities = lfw_tester._one_to_one_test(lfw_tester.dataset_one)
-    print(accuracy_rate)
-
-    # print(lfw_tester.dataset_one)
-    # lfw_tester._one_to_one_test(lfw_tester.dataset_one)
-    # # 1:1 测试
-    # accuracy_rate, FRR_FAR_curve = lfw_tester.make_one_to_one_test()
+    # data = lfw_tester.load_dataset_mask(2000)
+    # accuracy_rate, similarity_threshold, similarities = lfw_tester._one_to_one_test(lfw_tester.dataset_one)
     # print(accuracy_rate)
-    # print(FRR_FAR_curve)
-    # lfw_tester.show_FRR_FAR_curve(FRR_FAR_curve)
+
+    # # 1:1 测试
+    accuracy_rate, FRR_FAR_curve = lfw_tester.make_one_to_one_test()
+    print(accuracy_rate)
+    print(FRR_FAR_curve)
+    lfw_tester.show_FRR_FAR_curve(FRR_FAR_curve)
 
     # 1:N 测试
     # for i in range(1000, 14000, 2000):
