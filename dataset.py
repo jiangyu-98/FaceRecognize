@@ -91,7 +91,7 @@ def align_dataset(datalist_generator):
     from face_align import FaceAligner
 
     data_list = datalist_generator(lambda x: x.endswith(".jpg"))
-    face_aligner = FaceAligner(device='cpu')
+    face_aligner = FaceAligner(device='cuda')
     for picture, _ in data_list:
         try:
             if os.path.exists(picture.replace('jpg', 'png')):
