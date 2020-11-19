@@ -63,10 +63,13 @@ def get_mask_slim_datalist(condition=lambda x: x.endswith('.png')):
     from environment import mask_slim_path as data_folder
     data_list = []
     for cnt, people in enumerate(os.listdir(data_folder)):
+        print(cnt)
         if os.path.isfile(data_folder + people):
+            print("continue")
             continue
         for idx, picture in enumerate(filter(condition, os.listdir(data_folder + people))):
             data_list.append([data_folder + people + '/' + picture, cnt])
+        print("idx" + str(idx))
     return data_list
 
 
@@ -104,8 +107,21 @@ def align_dataset(datalist_generator):
 
 
 if __name__ == '__main__':
-    # v = get_casia_datalist()
+    # v = get_lfw_datalist()
     # print(v)
     # print(len(v))
 
-    print(align_dataset(get_casia_datalist))
+    # print(align_dataset(get_casia_datalist))
+    data = get_casia_datalist()
+    root = "D:/Projects/大规模多媒体信息检索与管理/dataset"
+    for path, name in data:
+        print(path)
+        folder = "/".join(path.replace("CASIA-WebFace", "CASIA-WebFace2").split("/")[:-1])
+        filename = path.split("/")[-1]
+        cmd1 = f'mkdir "{folder}"'
+        print(cmd1)
+        os.system(cmd1)
+        cmd2 = f'cp "{path}" "{folder + "/" + filename}"'
+        print(cmd2)
+        os.system(cmd2)
+        print(data)

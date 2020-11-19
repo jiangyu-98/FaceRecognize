@@ -93,10 +93,10 @@ if __name__ == '__main__':
         batch_size=16,
         max_epoch=30,
         checkpoint_save_interval=1,
-        message='lfw'
+        message='casia'
     )
     # 加载训练数据
-    train_dataloader = dataset.get_lfw_dataloader(hyper_parameter.batch_size)
+    train_dataloader = dataset.get_casia_dataloader(hyper_parameter.batch_size)
 
     # 加载模型
     net_trainer = NetTrainer(train_dataloader, hyper_parameter)
